@@ -1,0 +1,476 @@
+<!DOCTYPE html>
+<html lang="en" class="antialiased">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Contracts Deep Investigation — Teya GB</title>
+  <script src="https://cdn.tailwindcss.com?plugins="></script>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.7/dist/chart.umd.min.js"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Figtree:wght@400;500;600&display=swap" rel="stylesheet">
+  <style>
+    html, body { font-family: "Figtree", sans-serif; -webkit-font-smoothing: antialiased; }
+    .animate-in { opacity: 0; animation: fadeInUp 400ms ease-out forwards; }
+    @keyframes fadeInUp {
+      from { opacity: 0; transform: translateY(12px); filter: blur(4px); }
+      to { opacity: 1; transform: translateY(0); filter: blur(0); }
+    }
+    .stagger-1 { animation-delay: 100ms; }
+    .stagger-2 { animation-delay: 200ms; }
+    .stagger-3 { animation-delay: 300ms; }
+    .stagger-4 { animation-delay: 400ms; }
+    .stagger-5 { animation-delay: 500ms; }
+    canvas { max-height: 320px; }
+    .kpi-card { transition: transform 200ms ease, box-shadow 200ms ease; }
+    .kpi-card:hover { transform: translateY(-2px); box-shadow: 0 12px 28px -4px rgba(0,0,0,0.08); }
+    .section-nav a { transition: color 200ms ease, border-color 200ms ease; }
+    .section-nav a:hover { color: #090806ec; border-color: #e1e51a; }
+    .section-nav a.active { color: #090806ec; border-color: #e1e51a; font-weight: 600; }
+    @media print { .no-print { display: none !important; } body { background: white; } }
+  </style>
+</head>
+<body class="bg-[#f6f5f3] min-h-screen">
+
+  <!-- Header -->
+  <header class="bg-white border-b border-[#756b571a] sticky top-0 z-50 no-print">
+    <div class="max-w-7xl mx-auto px-6 py-4 flex items-center justify-between">
+      <div>
+        <h1 class="text-[28px] leading-[36px] font-semibold text-[#090806ec]">Contracts deep investigation</h1>
+        <p class="text-[14px] leading-[20px] font-normal text-[#16140e8c] mt-1">GB market · Fixed-term 12-month agreements · Since 10 March 2026 · Bernardo Olinto</p>
+      </div>
+      <div class="flex items-center gap-3">
+        <span class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-[#5f4f300d] text-[#16140e8c] text-[12px] leading-[16px] font-medium">
+          Last updated 14 April 2026
+        </span>
+      </div>
+    </div>
+    <div class="max-w-7xl mx-auto px-6 section-nav">
+      <nav class="flex gap-6 -mb-px overflow-x-auto">
+        <a href="#funnel" class="py-3 text-[14px] leading-[20px] font-medium text-[#16140e8c] border-b-2 border-transparent whitespace-nowrap active">Funnel</a>
+        <a href="#signing" class="py-3 text-[14px] leading-[20px] font-medium text-[#16140e8c] border-b-2 border-transparent whitespace-nowrap">Signing</a>
+        <a href="#activation" class="py-3 text-[14px] leading-[20px] font-medium text-[#16140e8c] border-b-2 border-transparent whitespace-nowrap">Activation</a>
+        <a href="#unsigned" class="py-3 text-[14px] leading-[20px] font-medium text-[#16140e8c] border-b-2 border-transparent whitespace-nowrap">Unsigned</a>
+        <a href="#risk" class="py-3 text-[14px] leading-[20px] font-medium text-[#16140e8c] border-b-2 border-transparent whitespace-nowrap">Risk</a>
+        <a href="#conclusions" class="py-3 text-[14px] leading-[20px] font-medium text-[#16140e8c] border-b-2 border-transparent whitespace-nowrap">Conclusions</a>
+      </nav>
+    </div>
+  </header>
+
+  <main class="max-w-7xl mx-auto px-6 py-8 space-y-12">
+
+    <!-- ===== SECTION 1: FUNNEL ===== -->
+    <section id="funnel" class="animate-in">
+      <div class="flex items-center gap-3 mb-6">
+        <h2 class="text-[24px] leading-[32px] font-semibold text-[#090806ec]">Funnel overview</h2>
+        <span class="text-[12px] leading-[16px] font-semibold uppercase tracking-[1.5px] text-[#16140e8c]">Since 10 Mar</span>
+      </div>
+      <div class="grid grid-cols-5 gap-4 mb-8">
+        <div class="kpi-card bg-white rounded-2xl p-5 shadow-[0px_1px_3px_rgba(119,111,95,0.08),0px_1px_2px_rgba(117,107,87,0.06)]">
+          <p class="text-[12px] leading-[16px] font-semibold uppercase tracking-[1.5px] text-[#211c1266] mb-2">Total onboarded</p>
+          <p class="text-[36px] leading-[44px] font-semibold tracking-[-0.25px] text-[#090806ec] tabular-nums">2,916</p>
+          <p class="text-[14px] leading-[20px] font-normal text-[#16140e8c] mt-1">GB companies</p>
+        </div>
+        <div class="kpi-card bg-white rounded-2xl p-5 shadow-[0px_1px_3px_rgba(119,111,95,0.08),0px_1px_2px_rgba(117,107,87,0.06)]">
+          <p class="text-[12px] leading-[16px] font-semibold uppercase tracking-[1.5px] text-[#211c1266] mb-2">With contract</p>
+          <p class="text-[36px] leading-[44px] font-semibold tracking-[-0.25px] text-[#090806ec] tabular-nums">675</p>
+          <p class="text-[14px] leading-[20px] font-normal text-[#16140e8c] mt-1">23.1% of onboarded</p>
+        </div>
+        <div class="kpi-card bg-white rounded-2xl p-5 shadow-[0px_1px_3px_rgba(119,111,95,0.08),0px_1px_2px_rgba(117,107,87,0.06)]">
+          <p class="text-[12px] leading-[16px] font-semibold uppercase tracking-[1.5px] text-[#211c1266] mb-2">Signed</p>
+          <p class="text-[36px] leading-[44px] font-semibold tracking-[-0.25px] text-[#497d00] tabular-nums">511</p>
+          <p class="text-[14px] leading-[20px] font-normal text-[#16140e8c] mt-1">75.7% sign rate</p>
+        </div>
+        <div class="kpi-card bg-white rounded-2xl p-5 shadow-[0px_1px_3px_rgba(119,111,95,0.08),0px_1px_2px_rgba(117,107,87,0.06)]">
+          <p class="text-[12px] leading-[16px] font-semibold uppercase tracking-[1.5px] text-[#211c1266] mb-2">Unsigned</p>
+          <p class="text-[36px] leading-[44px] font-semibold tracking-[-0.25px] text-[#e7000b] tabular-nums">164</p>
+          <p class="text-[14px] leading-[20px] font-normal text-[#16140e8c] mt-1">24.3% not signed</p>
+        </div>
+        <div class="kpi-card bg-white rounded-2xl p-5 shadow-[0px_1px_3px_rgba(119,111,95,0.08),0px_1px_2px_rgba(117,107,87,0.06)]">
+          <p class="text-[12px] leading-[16px] font-semibold uppercase tracking-[1.5px] text-[#211c1266] mb-2">No contract</p>
+          <p class="text-[36px] leading-[44px] font-semibold tracking-[-0.25px] text-[#090806ec] tabular-nums">2,241</p>
+          <p class="text-[14px] leading-[20px] font-normal text-[#16140e8c] mt-1">76.9% of onboarded</p>
+        </div>
+      </div>
+      <div class="grid grid-cols-2 gap-4">
+        <div class="bg-white rounded-2xl p-6 shadow-[0px_1px_3px_rgba(119,111,95,0.08),0px_1px_2px_rgba(117,107,87,0.06)]">
+          <p class="text-[12px] leading-[16px] font-semibold uppercase tracking-[1.5px] text-[#211c1266] mb-4">Onboarding funnel</p>
+          <canvas id="funnelChart"></canvas>
+        </div>
+        <div class="bg-white rounded-2xl p-6 shadow-[0px_1px_3px_rgba(119,111,95,0.08),0px_1px_2px_rgba(117,107,87,0.06)]">
+          <p class="text-[12px] leading-[16px] font-semibold uppercase tracking-[1.5px] text-[#211c1266] mb-4">Weekly contracts created vs signed</p>
+          <canvas id="weeklyChart"></canvas>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===== SECTION 2: SIGNING ===== -->
+    <section id="signing" class="animate-in stagger-1">
+      <h2 class="text-[24px] leading-[32px] font-semibold text-[#090806ec] mb-6">Signing behaviour</h2>
+      <div class="grid grid-cols-3 gap-4 mb-8">
+        <div class="kpi-card bg-white rounded-2xl p-5 shadow-[0px_1px_3px_rgba(119,111,95,0.08),0px_1px_2px_rgba(117,107,87,0.06)]">
+          <p class="text-[12px] leading-[16px] font-semibold uppercase tracking-[1.5px] text-[#211c1266] mb-2">Sign within 1 hour</p>
+          <p class="text-[36px] leading-[44px] font-semibold tracking-[-0.25px] text-[#497d00] tabular-nums">39.3%</p>
+          <p class="text-[14px] leading-[20px] font-normal text-[#16140e8c] mt-1">201 of 511 merchants</p>
+        </div>
+        <div class="kpi-card bg-white rounded-2xl p-5 shadow-[0px_1px_3px_rgba(119,111,95,0.08),0px_1px_2px_rgba(117,107,87,0.06)]">
+          <p class="text-[12px] leading-[16px] font-semibold uppercase tracking-[1.5px] text-[#211c1266] mb-2">Sign within 24 hours</p>
+          <p class="text-[36px] leading-[44px] font-semibold tracking-[-0.25px] text-[#090806ec] tabular-nums">70.6%</p>
+          <p class="text-[14px] leading-[20px] font-normal text-[#16140e8c] mt-1">361 of 511 merchants</p>
+        </div>
+        <div class="kpi-card bg-white rounded-2xl p-5 shadow-[0px_1px_3px_rgba(119,111,95,0.08),0px_1px_2px_rgba(117,107,87,0.06)]">
+          <p class="text-[12px] leading-[16px] font-semibold uppercase tracking-[1.5px] text-[#211c1266] mb-2">Take 7+ days</p>
+          <p class="text-[36px] leading-[44px] font-semibold tracking-[-0.25px] text-[#e17100] tabular-nums">6.3%</p>
+          <p class="text-[14px] leading-[20px] font-normal text-[#16140e8c] mt-1">32 merchants</p>
+        </div>
+      </div>
+      <div class="grid grid-cols-2 gap-4">
+        <div class="bg-white rounded-2xl p-6 shadow-[0px_1px_3px_rgba(119,111,95,0.08),0px_1px_2px_rgba(117,107,87,0.06)]">
+          <p class="text-[12px] leading-[16px] font-semibold uppercase tracking-[1.5px] text-[#211c1266] mb-4">Time to sign distribution</p>
+          <canvas id="signingDistChart"></canvas>
+        </div>
+        <div class="bg-white rounded-2xl p-6 shadow-[0px_1px_3px_rgba(119,111,95,0.08),0px_1px_2px_rgba(117,107,87,0.06)]">
+          <p class="text-[12px] leading-[16px] font-semibold uppercase tracking-[1.5px] text-[#211c1266] mb-4">Average vs median signing time (hours)</p>
+          <canvas id="signingTrendChart"></canvas>
+        </div>
+      </div>
+      <div class="bg-white rounded-2xl p-6 mt-4 shadow-[0px_1px_3px_rgba(119,111,95,0.08),0px_1px_2px_rgba(117,107,87,0.06)]">
+        <p class="text-[12px] leading-[16px] font-semibold uppercase tracking-[1.5px] text-[#211c1266] mb-3">Key insight</p>
+        <div class="flex items-start gap-3 p-4 rounded-xl bg-[#2b7fff1a] border border-[#2b7fff80]">
+          <svg class="w-5 h-5 text-[#1447e6] flex-shrink-0 mt-0.5" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clip-rule="evenodd"/></svg>
+          <div>
+            <p class="text-[16px] leading-[24px] font-medium text-[#090806ec]">The median signing time is very low (0-5 hours), but averages reach up to 48.6 hours.</p>
+            <p class="text-[14px] leading-[20px] font-normal text-[#16140e8c] mt-1">Most merchants sign quickly during onboarding, but a tail of slow signers pulls up the average. The week of 23 Mar saw the biggest spike (48.6h avg) - coinciding with the full Inside Sales rollout on 16 Mar, suggesting new agents may not be guiding merchants through the app login. The declining sign rate (95.7% &rarr; 73.9%) confirms this as a scaling issue.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===== SECTION 3: ACTIVATION ===== -->
+    <section id="activation" class="animate-in stagger-2">
+      <h2 class="text-[24px] leading-[32px] font-semibold text-[#090806ec] mb-6">Activation comparison</h2>
+      <div class="grid grid-cols-2 gap-4 mb-8">
+        <div class="bg-white rounded-2xl p-6 shadow-[0px_1px_3px_rgba(119,111,95,0.08),0px_1px_2px_rgba(117,107,87,0.06)] border-l-4 border-[#e1e51a]">
+          <p class="text-[12px] leading-[16px] font-semibold uppercase tracking-[1.5px] text-[#211c1266] mb-4">With contract</p>
+          <div class="grid grid-cols-3 gap-4">
+            <div>
+              <p class="text-[14px] leading-[20px] font-normal text-[#16140e8c]">Total</p>
+              <p class="text-[28px] leading-[36px] font-semibold tracking-[-0.25px] text-[#090806ec] tabular-nums">640</p>
+            </div>
+            <div>
+              <p class="text-[14px] leading-[20px] font-normal text-[#16140e8c]">Activated</p>
+              <p class="text-[28px] leading-[36px] font-semibold tracking-[-0.25px] text-[#497d00] tabular-nums">372</p>
+            </div>
+            <div>
+              <p class="text-[14px] leading-[20px] font-normal text-[#16140e8c]">Rate</p>
+              <p class="text-[28px] leading-[36px] font-semibold tracking-[-0.25px] text-[#090806ec] tabular-nums">58.1%</p>
+            </div>
+          </div>
+          <div class="mt-4 pt-4 border-t border-[#756b571a] grid grid-cols-2 gap-4">
+            <div>
+              <p class="text-[14px] leading-[20px] font-normal text-[#16140e8c]">Avg days to 1st txn</p>
+              <p class="text-[20px] leading-[28px] font-semibold text-[#497d00] tabular-nums">3.5 days</p>
+            </div>
+            <div>
+              <p class="text-[14px] leading-[20px] font-normal text-[#16140e8c]">Median days</p>
+              <p class="text-[20px] leading-[28px] font-semibold text-[#497d00] tabular-nums">2.0 days</p>
+            </div>
+          </div>
+        </div>
+        <div class="bg-white rounded-2xl p-6 shadow-[0px_1px_3px_rgba(119,111,95,0.08),0px_1px_2px_rgba(117,107,87,0.06)] border-l-4 border-[#555450]">
+          <p class="text-[12px] leading-[16px] font-semibold uppercase tracking-[1.5px] text-[#211c1266] mb-4">Without contract</p>
+          <div class="grid grid-cols-3 gap-4">
+            <div>
+              <p class="text-[14px] leading-[20px] font-normal text-[#16140e8c]">Total</p>
+              <p class="text-[28px] leading-[36px] font-semibold tracking-[-0.25px] text-[#090806ec] tabular-nums">2,276</p>
+            </div>
+            <div>
+              <p class="text-[14px] leading-[20px] font-normal text-[#16140e8c]">Activated</p>
+              <p class="text-[28px] leading-[36px] font-semibold tracking-[-0.25px] text-[#497d00] tabular-nums">1,463</p>
+            </div>
+            <div>
+              <p class="text-[14px] leading-[20px] font-normal text-[#16140e8c]">Rate</p>
+              <p class="text-[28px] leading-[36px] font-semibold tracking-[-0.25px] text-[#090806ec] tabular-nums">64.3%</p>
+            </div>
+          </div>
+          <div class="mt-4 pt-4 border-t border-[#756b571a] grid grid-cols-2 gap-4">
+            <div>
+              <p class="text-[14px] leading-[20px] font-normal text-[#16140e8c]">Avg days to 1st txn</p>
+              <p class="text-[20px] leading-[28px] font-semibold text-[#090806ec] tabular-nums">4.5 days</p>
+            </div>
+            <div>
+              <p class="text-[14px] leading-[20px] font-normal text-[#16140e8c]">Median days</p>
+              <p class="text-[20px] leading-[28px] font-semibold text-[#090806ec] tabular-nums">3.0 days</p>
+            </div>
+          </div>
+        </div>
+      </div>
+      <!-- Activation by channel -->
+      <div class="bg-white rounded-2xl p-6 shadow-[0px_1px_3px_rgba(119,111,95,0.08),0px_1px_2px_rgba(117,107,87,0.06)] mb-4">
+        <p class="text-[12px] leading-[16px] font-semibold uppercase tracking-[1.5px] text-[#211c1266] mb-4">Activation by sales channel (contract merchants only)</p>
+        <div class="overflow-x-auto">
+          <table class="w-full text-[14px] leading-[20px]">
+            <thead><tr class="border-b border-[#756b571a]">
+              <th class="text-left py-3 px-4 font-semibold text-[#090806ec]">Channel</th>
+              <th class="text-right py-3 px-4 font-semibold text-[#090806ec]">Total</th>
+              <th class="text-right py-3 px-4 font-semibold text-[#090806ec]">Activated</th>
+              <th class="text-right py-3 px-4 font-semibold text-[#090806ec]">Rate</th>
+              <th class="text-right py-3 px-4 font-semibold text-[#090806ec]">Avg days to txn</th>
+            </tr></thead>
+            <tbody class="text-[#16140e8c]">
+              <tr class="border-b border-[#756b571a]"><td class="py-3 px-4 font-medium text-[#090806ec]">ISA (ISC)</td><td class="text-right py-3 px-4 tabular-nums">408</td><td class="text-right py-3 px-4 tabular-nums">241</td><td class="text-right py-3 px-4 tabular-nums font-semibold text-[#497d00]">59.1%</td><td class="text-right py-3 px-4 tabular-nums">2.9 days</td></tr>
+              <tr class="border-b border-[#756b571a]"><td class="py-3 px-4 font-medium text-[#090806ec]">Inside Sales</td><td class="text-right py-3 px-4 tabular-nums">221</td><td class="text-right py-3 px-4 tabular-nums">124</td><td class="text-right py-3 px-4 tabular-nums font-semibold text-[#e17100]">56.1%</td><td class="text-right py-3 px-4 tabular-nums">4.7 days</td></tr>
+              <tr class="border-b border-[#756b571a]"><td class="py-3 px-4 font-medium text-[#090806ec]">Field</td><td class="text-right py-3 px-4 tabular-nums">9</td><td class="text-right py-3 px-4 tabular-nums">6</td><td class="text-right py-3 px-4 tabular-nums font-semibold text-[#497d00]">66.7%</td><td class="text-right py-3 px-4 tabular-nums">1.0 days</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- Weekly activation trend + TPV -->
+      <div class="grid grid-cols-2 gap-4 mb-4">
+        <div class="bg-white rounded-2xl p-6 shadow-[0px_1px_3px_rgba(119,111,95,0.08),0px_1px_2px_rgba(117,107,87,0.06)]">
+          <p class="text-[12px] leading-[16px] font-semibold uppercase tracking-[1.5px] text-[#211c1266] mb-4">Weekly activation rate: contract vs no contract</p>
+          <canvas id="weeklyActivationChart"></canvas>
+        </div>
+        <div class="bg-white rounded-2xl p-6 shadow-[0px_1px_3px_rgba(119,111,95,0.08),0px_1px_2px_rgba(117,107,87,0.06)]">
+          <p class="text-[12px] leading-[16px] font-semibold uppercase tracking-[1.5px] text-[#211c1266] mb-4">Lifetime TPV comparison (activated merchants)</p>
+          <canvas id="tpvCompareChart"></canvas>
+        </div>
+      </div>
+
+      <!-- TPV KPI cards -->
+      <div class="grid grid-cols-2 gap-4 mb-4">
+        <div class="bg-white rounded-2xl p-5 shadow-[0px_1px_3px_rgba(119,111,95,0.08),0px_1px_2px_rgba(117,107,87,0.06)] border-l-4 border-[#e1e51a]">
+          <p class="text-[12px] leading-[16px] font-semibold uppercase tracking-[1.5px] text-[#211c1266] mb-2">Contract merchants TPV</p>
+          <div class="grid grid-cols-3 gap-4">
+            <div><p class="text-[14px] leading-[20px] font-normal text-[#16140e8c]">Total TPV</p><p class="text-[20px] leading-[28px] font-semibold text-[#090806ec] tabular-nums">&euro;1.80M</p></div>
+            <div><p class="text-[14px] leading-[20px] font-normal text-[#16140e8c]">Avg per company</p><p class="text-[20px] leading-[28px] font-semibold text-[#090806ec] tabular-nums">&euro;4,543</p></div>
+            <div><p class="text-[14px] leading-[20px] font-normal text-[#16140e8c]">Median</p><p class="text-[20px] leading-[28px] font-semibold text-[#090806ec] tabular-nums">&euro;1,758</p></div>
+          </div>
+        </div>
+        <div class="bg-white rounded-2xl p-5 shadow-[0px_1px_3px_rgba(119,111,95,0.08),0px_1px_2px_rgba(117,107,87,0.06)] border-l-4 border-[#555450]">
+          <p class="text-[12px] leading-[16px] font-semibold uppercase tracking-[1.5px] text-[#211c1266] mb-2">Non-contract merchants TPV</p>
+          <div class="grid grid-cols-3 gap-4">
+            <div><p class="text-[14px] leading-[20px] font-normal text-[#16140e8c]">Total TPV</p><p class="text-[20px] leading-[28px] font-semibold text-[#090806ec] tabular-nums">&euro;14.12M</p></div>
+            <div><p class="text-[14px] leading-[20px] font-normal text-[#16140e8c]">Avg per company</p><p class="text-[20px] leading-[28px] font-semibold text-[#090806ec] tabular-nums">&euro;9,018</p></div>
+            <div><p class="text-[14px] leading-[20px] font-normal text-[#16140e8c]">Median</p><p class="text-[20px] leading-[28px] font-semibold text-[#090806ec] tabular-nums">&euro;3,349</p></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="bg-white rounded-2xl p-6 shadow-[0px_1px_3px_rgba(119,111,95,0.08),0px_1px_2px_rgba(117,107,87,0.06)]">
+        <p class="text-[12px] leading-[16px] font-semibold uppercase tracking-[1.5px] text-[#211c1266] mb-3">Key insights</p>
+        <div class="space-y-3">
+          <div class="flex items-start gap-3 p-4 rounded-xl bg-[#fe9a001a] border border-[#ff690080]">
+            <svg class="w-5 h-5 text-[#bb4d00] flex-shrink-0 mt-0.5" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M8.257 3.099c.765-1.36 2.722-1.36 3.486 0l5.58 9.92c.75 1.334-.213 2.98-1.742 2.98H4.42c-1.53 0-2.493-1.646-1.743-2.98l5.58-9.92zM11 13a1 1 0 11-2 0 1 1 0 012 0zm-1-8a1 1 0 00-1 1v3a1 1 0 002 0V6a1 1 0 00-1-1z" clip-rule="evenodd"/></svg>
+            <div>
+              <p class="text-[16px] leading-[24px] font-medium text-[#090806ec]">Contract merchants activate 6.2pp lower overall but activate faster (2.0 vs 3.0 median days). ISA channel leads with 59.1% and fastest time (2.9 days).</p>
+              <p class="text-[14px] leading-[20px] font-normal text-[#16140e8c] mt-1">The lower activation rate is dragged down by 164 unsigned merchants. The cohort is only 5 weeks old. Weekly trends show contract and no-contract rates track closely, with both declining for recent weeks (cohort maturity effect, not a contract-specific issue).</p>
+            </div>
+          </div>
+          <div class="flex items-start gap-3 p-4 rounded-xl bg-[#2b7fff1a] border border-[#2b7fff80]">
+            <svg class="w-5 h-5 text-[#1447e6] flex-shrink-0 mt-0.5" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clip-rule="evenodd"/></svg>
+            <div>
+              <p class="text-[16px] leading-[24px] font-medium text-[#090806ec]">Non-contract merchants have 2x higher avg TPV (&euro;9,018 vs &euro;4,543) - but this is a pool size and age effect.</p>
+              <p class="text-[14px] leading-[20px] font-normal text-[#16140e8c] mt-1">The non-contract pool is 3.9x larger (1,463 vs 372 activated) and includes merchants from all channels and onboarding periods. Contract merchants are newer (all since 10 Mar). TPV comparison will become meaningful as the contract cohort matures.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===== SECTION 4: UNSIGNED ===== -->
+    <section id="unsigned" class="animate-in stagger-3">
+      <h2 class="text-[24px] leading-[32px] font-semibold text-[#090806ec] mb-6">Why didn't they sign?</h2>
+      <div class="grid grid-cols-2 gap-4 mb-8">
+        <div class="bg-white rounded-2xl p-6 shadow-[0px_1px_3px_rgba(119,111,95,0.08),0px_1px_2px_rgba(117,107,87,0.06)]">
+          <p class="text-[12px] leading-[16px] font-semibold uppercase tracking-[1.5px] text-[#211c1266] mb-4">Unsigned by CDD status</p>
+          <canvas id="unsignedReasonsChart"></canvas>
+        </div>
+        <div class="bg-white rounded-2xl p-6 shadow-[0px_1px_3px_rgba(119,111,95,0.08),0px_1px_2px_rgba(117,107,87,0.06)]">
+          <p class="text-[12px] leading-[16px] font-semibold uppercase tracking-[1.5px] text-[#211c1266] mb-4">Unsigned - transacting vs not</p>
+          <canvas id="unsignedTransactingChart"></canvas>
+        </div>
+      </div>
+      <div class="bg-white rounded-2xl p-6 shadow-[0px_1px_3px_rgba(119,111,95,0.08),0px_1px_2px_rgba(117,107,87,0.06)]">
+        <p class="text-[12px] leading-[16px] font-semibold uppercase tracking-[1.5px] text-[#211c1266] mb-4">Full breakdown</p>
+        <div class="overflow-x-auto">
+          <table class="w-full text-[14px] leading-[20px]">
+            <thead>
+              <tr class="border-b border-[#756b571a]">
+                <th class="text-left py-3 px-4 font-semibold text-[#090806ec]">CDD Status</th>
+                <th class="text-center py-3 px-4 font-semibold text-[#090806ec]">Transacting?</th>
+                <th class="text-right py-3 px-4 font-semibold text-[#090806ec]">Count</th>
+                <th class="text-right py-3 px-4 font-semibold text-[#090806ec]">% of unsigned</th>
+              </tr>
+            </thead>
+            <tbody class="text-[#16140e8c]">
+              <tr class="border-b border-[#756b571a]"><td class="py-3 px-4 font-medium text-[#090806ec]">Manual review - questionnaire not submitted</td><td class="text-center py-3 px-4"><span class="inline-flex items-center px-2 py-0.5 rounded-full text-[12px] font-semibold bg-[#756b571a] text-[#555450]">No</span></td><td class="text-right py-3 px-4 tabular-nums font-medium">39</td><td class="text-right py-3 px-4 tabular-nums">23.8%</td></tr>
+              <tr class="border-b border-[#756b571a]"><td class="py-3 px-4 font-medium text-[#090806ec]">Manual review - questionnaire submitted</td><td class="text-center py-3 px-4"><span class="inline-flex items-center px-2 py-0.5 rounded-full text-[12px] font-semibold bg-[#756b571a] text-[#555450]">No</span></td><td class="text-right py-3 px-4 tabular-nums font-medium">37</td><td class="text-right py-3 px-4 tabular-nums">22.6%</td></tr>
+              <tr class="border-b border-[#756b571a]"><td class="py-3 px-4 font-medium text-[#090806ec]">Unknown (no MSV match)</td><td class="text-center py-3 px-4"><span class="inline-flex items-center px-2 py-0.5 rounded-full text-[12px] font-semibold bg-[#fe9a001a] text-[#bb4d00]">-</span></td><td class="text-right py-3 px-4 tabular-nums font-medium">26</td><td class="text-right py-3 px-4 tabular-nums">15.9%</td></tr>
+              <tr class="border-b border-[#756b571a]"><td class="py-3 px-4 font-medium text-[#090806ec]">CDD Complete</td><td class="text-center py-3 px-4"><span class="inline-flex items-center px-2 py-0.5 rounded-full text-[12px] font-semibold bg-[#7ccf001a] text-[#497d00]">Yes</span></td><td class="text-right py-3 px-4 tabular-nums font-medium text-[#e7000b]">22</td><td class="text-right py-3 px-4 tabular-nums">13.4%</td></tr>
+              <tr class="border-b border-[#756b571a]"><td class="py-3 px-4 font-medium text-[#090806ec]">CDD Complete</td><td class="text-center py-3 px-4"><span class="inline-flex items-center px-2 py-0.5 rounded-full text-[12px] font-semibold bg-[#756b571a] text-[#555450]">No</span></td><td class="text-right py-3 px-4 tabular-nums font-medium">21</td><td class="text-right py-3 px-4 tabular-nums">12.8%</td></tr>
+              <tr class="border-b border-[#756b571a]"><td class="py-3 px-4 font-medium text-[#090806ec]">CDD Rejected</td><td class="text-center py-3 px-4"><span class="inline-flex items-center px-2 py-0.5 rounded-full text-[12px] font-semibold bg-[#756b571a] text-[#555450]">No</span></td><td class="text-right py-3 px-4 tabular-nums font-medium">14</td><td class="text-right py-3 px-4 tabular-nums">8.5%</td></tr>
+              <tr class="border-b border-[#756b571a]"><td class="py-3 px-4 font-medium text-[#090806ec]">Other (rejected transacting, manual review transacting, cancelled)</td><td class="text-center py-3 px-4"><span class="inline-flex items-center px-2 py-0.5 rounded-full text-[12px] font-semibold bg-[#756b571a] text-[#555450]">Mixed</span></td><td class="text-right py-3 px-4 tabular-nums font-medium">5</td><td class="text-right py-3 px-4 tabular-nums">3.0%</td></tr>
+            </tbody>
+            <tfoot>
+              <tr class="border-t-2 border-[#8f867633]"><td class="py-3 px-4 font-semibold text-[#090806ec]">Total unsigned</td><td></td><td class="text-right py-3 px-4 tabular-nums font-semibold text-[#090806ec]">164</td><td class="text-right py-3 px-4 tabular-nums font-semibold">100%</td></tr>
+              <tr><td class="py-3 px-4 font-semibold text-[#e7000b]">Of which transacting without contract</td><td></td><td class="text-right py-3 px-4 tabular-nums font-semibold text-[#e7000b]">27</td><td class="text-right py-3 px-4 tabular-nums font-semibold text-[#e7000b]">16.5%</td></tr>
+            </tfoot>
+          </table>
+        </div>
+      </div>
+      <div class="bg-white rounded-2xl p-6 mt-4 shadow-[0px_1px_3px_rgba(119,111,95,0.08),0px_1px_2px_rgba(117,107,87,0.06)]">
+        <p class="text-[12px] leading-[16px] font-semibold uppercase tracking-[1.5px] text-[#211c1266] mb-3">Key insight</p>
+        <div class="flex items-start gap-3 p-4 rounded-xl bg-[#fb2c361a] border border-[#fb2c3680]">
+          <svg class="w-5 h-5 text-[#e7000b] flex-shrink-0 mt-0.5" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z" clip-rule="evenodd"/></svg>
+          <div>
+            <p class="text-[16px] leading-[24px] font-medium text-[#090806ec]">46.4% of unsigned merchants are stuck in CDD Manual Review. 27 are transacting without a signed contract.</p>
+            <p class="text-[14px] leading-[20px] font-normal text-[#16140e8c] mt-2">The 76 merchants in manual review likely haven't logged into the app at all. The 22 CDD-cleared merchants transacting without signing are the highest-risk group - they bypassed the signing step entirely. The 26 "unknown" merchants have no MSV match, suggesting data linkage issues worth investigating.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===== SECTION 5: RISK ===== -->
+    <section id="risk" class="animate-in stagger-4">
+      <h2 class="text-[24px] leading-[32px] font-semibold text-[#090806ec] mb-6">Risk assessment & actions</h2>
+      <div class="grid grid-cols-4 gap-4 mb-8">
+        <div class="kpi-card bg-white rounded-2xl p-5 shadow-[0px_1px_3px_rgba(119,111,95,0.08),0px_1px_2px_rgba(117,107,87,0.06)]">
+          <p class="text-[12px] leading-[16px] font-semibold uppercase tracking-[1.5px] text-[#211c1266] mb-2">Signed</p>
+          <p class="text-[36px] leading-[44px] font-semibold tracking-[-0.25px] text-[#497d00] tabular-nums">511</p>
+          <p class="text-[14px] leading-[20px] font-normal text-[#497d00] mt-1">Healthy</p>
+        </div>
+        <div class="kpi-card bg-white rounded-2xl p-5 shadow-[0px_1px_3px_rgba(119,111,95,0.08),0px_1px_2px_rgba(117,107,87,0.06)]">
+          <p class="text-[12px] leading-[16px] font-semibold uppercase tracking-[1.5px] text-[#211c1266] mb-2">Recently created</p>
+          <p class="text-[36px] leading-[44px] font-semibold tracking-[-0.25px] text-[#1447e6] tabular-nums">48</p>
+          <p class="text-[14px] leading-[20px] font-normal text-[#1447e6] mt-1">Monitoring</p>
+        </div>
+        <div class="kpi-card bg-white rounded-2xl p-5 shadow-[0px_1px_3px_rgba(119,111,95,0.08),0px_1px_2px_rgba(117,107,87,0.06)]">
+          <p class="text-[12px] leading-[16px] font-semibold uppercase tracking-[1.5px] text-[#211c1266] mb-2">At risk</p>
+          <p class="text-[36px] leading-[44px] font-semibold tracking-[-0.25px] text-[#e17100] tabular-nums">43</p>
+          <p class="text-[14px] leading-[20px] font-normal text-[#e17100] mt-1">Needs outreach</p>
+        </div>
+        <div class="kpi-card bg-white rounded-2xl p-5 shadow-[0px_1px_3px_rgba(119,111,95,0.08),0px_1px_2px_rgba(117,107,87,0.06)]">
+          <p class="text-[12px] leading-[16px] font-semibold uppercase tracking-[1.5px] text-[#211c1266] mb-2">Likely lost</p>
+          <p class="text-[36px] leading-[44px] font-semibold tracking-[-0.25px] text-[#e7000b] tabular-nums">73</p>
+          <p class="text-[14px] leading-[20px] font-normal text-[#e7000b] mt-1">Critical</p>
+        </div>
+      </div>
+      <div class="grid grid-cols-2 gap-4">
+        <div class="bg-white rounded-2xl p-6 shadow-[0px_1px_3px_rgba(119,111,95,0.08),0px_1px_2px_rgba(117,107,87,0.06)]">
+          <p class="text-[12px] leading-[16px] font-semibold uppercase tracking-[1.5px] text-[#211c1266] mb-4">Contract status distribution</p>
+          <canvas id="riskDonutChart"></canvas>
+        </div>
+        <div class="bg-white rounded-2xl p-6 shadow-[0px_1px_3px_rgba(119,111,95,0.08),0px_1px_2px_rgba(117,107,87,0.06)]">
+          <p class="text-[12px] leading-[16px] font-semibold uppercase tracking-[1.5px] text-[#211c1266] mb-4">Recommended actions</p>
+          <div class="space-y-4">
+            <div class="flex items-start gap-3 p-4 rounded-xl bg-[#fb2c361a]">
+              <span class="flex-shrink-0 w-6 h-6 rounded-full bg-[#fb2c36] text-white text-[12px] font-semibold flex items-center justify-center">1</span>
+              <div>
+                <p class="text-[14px] leading-[20px] font-semibold text-[#090806ec]">Address 27 unsigned-but-transacting merchants</p>
+                <p class="text-[14px] leading-[20px] font-normal text-[#16140e8c]">Share individual lists with each ISC/agent. Require app login support during onboarding.</p>
+              </div>
+            </div>
+            <div class="flex items-start gap-3 p-4 rounded-xl bg-[#fe9a001a]">
+              <span class="flex-shrink-0 w-6 h-6 rounded-full bg-[#e17100] text-white text-[12px] font-semibold flex items-center justify-center">2</span>
+              <div>
+                <p class="text-[14px] leading-[20px] font-semibold text-[#090806ec]">Proactive outreach to 43 at-risk merchants</p>
+                <p class="text-[14px] leading-[20px] font-normal text-[#16140e8c]">Contracts created 7+ days ago without signing. Sales agents should follow up.</p>
+              </div>
+            </div>
+            <div class="flex items-start gap-3 p-4 rounded-xl bg-[#2b7fff1a]">
+              <span class="flex-shrink-0 w-6 h-6 rounded-full bg-[#155dfc] text-white text-[12px] font-semibold flex items-center justify-center">3</span>
+              <div>
+                <p class="text-[14px] leading-[20px] font-semibold text-[#090806ec]">ISC channel training on app login</p>
+                <p class="text-[14px] leading-[20px] font-normal text-[#16140e8c]">ISC signing rate is significantly lower. Contract is the first screen on app login.</p>
+              </div>
+            </div>
+            <div class="flex items-start gap-3 p-4 rounded-xl bg-[#7ccf001a]">
+              <span class="flex-shrink-0 w-6 h-6 rounded-full bg-[#5ea500] text-white text-[12px] font-semibold flex items-center justify-center">4</span>
+              <div>
+                <p class="text-[14px] leading-[20px] font-semibold text-[#090806ec]">Close terminal activation gap</p>
+                <p class="text-[14px] leading-[20px] font-normal text-[#16140e8c]">Enforce contract signing in the new registration flow before terminal activation.</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===== SECTION 6: CONCLUSIONS ===== -->
+    <section id="conclusions" class="animate-in stagger-5">
+      <h2 class="text-[24px] leading-[32px] font-semibold text-[#090806ec] mb-6">Conclusions</h2>
+      <div class="bg-white rounded-2xl p-8 shadow-[0px_1px_3px_rgba(119,111,95,0.08),0px_1px_2px_rgba(117,107,87,0.06)]">
+        <div class="space-y-6">
+          <div>
+            <h3 class="text-[18px] leading-[26px] font-semibold text-[#090806ec] mb-2">Contract adoption is strong - 675 contracts in 5 weeks</h3>
+            <p class="text-[16px] leading-[24px] font-normal text-[#16140e8c]">23.1% of all GB onboarded customers received a contract. Weekly creation volumes jumped from 23 to 198 after the full Inside Sales rollout. The signing rate is 75.7% overall.</p>
+          </div>
+          <div class="border-t border-[#756b571a] pt-6">
+            <h3 class="text-[18px] leading-[26px] font-semibold text-[#090806ec] mb-2">Most merchants sign fast, but a tail creates risk</h3>
+            <p class="text-[16px] leading-[24px] font-normal text-[#16140e8c]">39.3% sign within 1 hour and 70.6% within 24 hours. However, 164 haven't signed at all - 27 of whom are already transacting without a contract.</p>
+          </div>
+          <div class="border-t border-[#756b571a] pt-6">
+            <h3 class="text-[18px] leading-[26px] font-semibold text-[#090806ec] mb-2">Signed merchants activate faster</h3>
+            <p class="text-[16px] leading-[24px] font-normal text-[#16140e8c]">Despite a 6.2pp lower overall activation rate, contract merchants reach first transaction 1 day faster (median 2.0 vs 3.0 days). The gap is expected to narrow as unsigned cases are resolved.</p>
+          </div>
+          <div class="border-t border-[#756b571a] pt-6">
+            <h3 class="text-[18px] leading-[26px] font-semibold text-[#090806ec] mb-2">The signing rate is declining week over week</h3>
+            <p class="text-[16px] leading-[24px] font-normal text-[#16140e8c]">From 95.7% to 73.9% as contracts scale to more agents. This is a process gap (agents not guiding app login), not a product gap.</p>
+          </div>
+          <div class="border-t border-[#756b571a] pt-6">
+            <h3 class="text-[18px] leading-[26px] font-semibold text-[#090806ec] mb-2">Biggest risk: 76 unsigned merchants stuck in CDD Manual Review</h3>
+            <p class="text-[16px] leading-[24px] font-normal text-[#16140e8c]">Combined with 73 "likely lost" merchants, coordinated outreach between sales and compliance is needed.</p>
+          </div>
+        </div>
+      </div>
+      <div class="mt-8 text-center">
+        <p class="text-[12px] leading-[16px] font-normal text-[#211c1266]">
+          Sources: <code class="px-1.5 py-0.5 bg-[#5f4f300d] rounded text-[11px]">prd.INTERMEDIATE.GENERIC_INT_MODELS_ACQUIRING_MID_SINGLE_VIEW</code> ·
+          <code class="px-1.5 py-0.5 bg-[#5f4f300d] rounded text-[11px]">prd.saltpay.global_merchant_database__public_agreements</code>
+          <br>Report generated 14 April 2026 · Bernardo Olinto for Nicolo Meoli
+        </p>
+      </div>
+    </section>
+  </main>
+
+  <script>
+    Chart.defaults.font.family = 'Figtree';
+    Chart.defaults.font.size = 13;
+    Chart.defaults.color = '#16140e8c';
+    Chart.defaults.plugins.legend.labels.usePointStyle = true;
+    Chart.defaults.plugins.legend.labels.pointStyle = 'circle';
+    const brandYellow='#e1e51a',brandDark='#46520f',positive='#5ea500',caution='#e17100',critical='#fb2c36',info='#155dfc',neutral600='#555450',neutral300='#d6d5d1',gridColor='#756b571a';
+
+    // 1. Funnel
+    new Chart(document.getElementById('funnelChart'),{type:'bar',data:{labels:['Total onboarded','With contract','Signed','Unsigned'],datasets:[{data:[2916,675,511,164],backgroundColor:[neutral300,brandYellow,positive,critical],borderRadius:8,barPercentage:0.6}]},options:{indexAxis:'y',responsive:true,plugins:{legend:{display:false},tooltip:{callbacks:{label:c=>`${c.raw.toLocaleString()} companies`}}},scales:{x:{grid:{color:gridColor},ticks:{callback:v=>v.toLocaleString()}},y:{grid:{display:false}}}}});
+
+    // 2. Weekly
+    new Chart(document.getElementById('weeklyChart'),{type:'bar',data:{labels:['9 Mar','16 Mar','23 Mar','30 Mar','6 Apr','13 Apr*'],datasets:[{label:'Created',data:[23,29,198,167,184,74],backgroundColor:neutral300,borderRadius:6,barPercentage:0.7,categoryPercentage:0.8},{label:'Signed',data:[22,28,167,129,136,29],backgroundColor:brandYellow,borderRadius:6,barPercentage:0.7,categoryPercentage:0.8}]},options:{responsive:true,plugins:{legend:{position:'bottom'},tooltip:{callbacks:{afterBody:function(c){const r=[95.7,96.6,84.3,77.2,73.9,39.2];return'Sign rate: '+r[c[0].dataIndex]+'%'}}}},scales:{x:{grid:{display:false}},y:{grid:{color:gridColor},beginAtZero:true}}}});
+
+    // 3. Signing distribution
+    new Chart(document.getElementById('signingDistChart'),{type:'bar',data:{labels:['< 1h','1-4h','4-12h','12-24h','1-3d','3-7d','7+d'],datasets:[{data:[201,89,34,37,73,45,32],backgroundColor:[positive,'#7ccf00',brandYellow,'#fdc700',caution,'#bb4d00',critical],borderRadius:6,barPercentage:0.7}]},options:{responsive:true,plugins:{legend:{display:false},tooltip:{callbacks:{label:c=>`${c.raw} merchants (${(c.raw/511*100).toFixed(1)}%)`}}},scales:{x:{grid:{display:false}},y:{grid:{color:gridColor},beginAtZero:true}}}});
+
+    // 4. Signing trend
+    new Chart(document.getElementById('signingTrendChart'),{type:'line',data:{labels:['9 Mar','16 Mar','23 Mar','30 Mar','6 Apr','13 Apr*'],datasets:[{label:'Average hours',data:[16.59,27.46,48.60,40.47,25.58,2.66],borderColor:critical,backgroundColor:critical+'20',tension:0.3,fill:false,pointRadius:5,pointHoverRadius:7},{label:'Median hours',data:[0,0,1,1,5,0],borderColor:positive,backgroundColor:positive+'20',tension:0.3,fill:false,pointRadius:5,pointHoverRadius:7}]},options:{responsive:true,plugins:{legend:{position:'bottom'}},scales:{x:{grid:{display:false}},y:{grid:{color:gridColor},beginAtZero:true,title:{display:true,text:'Hours'}}}}});
+
+    // 5. Weekly activation trend
+    new Chart(document.getElementById('weeklyActivationChart'),{type:'line',data:{labels:['9 Mar','16 Mar','23 Mar','30 Mar','6 Apr','13 Apr*'],datasets:[{label:'With Contract',data:[69.6,72.4,67.7,67.1,45.7,12.8],borderColor:brandYellow,backgroundColor:brandYellow+'30',tension:0.3,fill:false,pointRadius:5,pointHoverRadius:7,borderWidth:2.5},{label:'No Contract',data:[64.1,71.4,72.9,69.5,49.8,8.9],borderColor:neutral600,backgroundColor:neutral600+'20',tension:0.3,fill:false,pointRadius:5,pointHoverRadius:7,borderWidth:2.5,borderDash:[5,5]}]},options:{responsive:true,plugins:{legend:{position:'bottom'}},scales:{x:{grid:{display:false}},y:{grid:{color:gridColor},beginAtZero:true,max:100,title:{display:true,text:'Activation %'}}}}});
+
+    // 5b. TPV comparison
+    new Chart(document.getElementById('tpvCompareChart'),{type:'bar',data:{labels:['Avg TPV per company (EUR)','Median TPV (EUR)'],datasets:[{label:'With Contract',data:[4543,1758],backgroundColor:brandYellow,borderRadius:6,barPercentage:0.6,categoryPercentage:0.7},{label:'No Contract',data:[9018,3349],backgroundColor:neutral300,borderRadius:6,barPercentage:0.6,categoryPercentage:0.7}]},options:{responsive:true,plugins:{legend:{position:'bottom'},tooltip:{callbacks:{label:c=>'€'+c.raw.toLocaleString()}}},scales:{x:{grid:{display:false}},y:{grid:{color:gridColor},beginAtZero:true,ticks:{callback:v=>'€'+v.toLocaleString()}}}}});
+
+    // 6. Unsigned reasons
+    new Chart(document.getElementById('unsignedReasonsChart'),{type:'doughnut',data:{labels:['Manual review (no questionnaire) - 39','Manual review (submitted) - 39','Unknown - 26','CDD Complete (transacting) - 22','CDD Complete (not transacting) - 21','CDD Rejected - 15','Other - 2'],datasets:[{data:[39,39,26,22,21,15,2],backgroundColor:[caution,'#fdc700',neutral300,critical,'#bb4d00','#7f1118','#d6d5d1'],borderWidth:2,borderColor:'#ffffff'}]},options:{responsive:true,cutout:'55%',plugins:{legend:{position:'bottom',labels:{font:{size:11},padding:10}}}}});
+
+    // 7. Unsigned transacting
+    new Chart(document.getElementById('unsignedTransactingChart'),{type:'bar',data:{labels:['Not transacting','Transacting'],datasets:[{data:[137,27],backgroundColor:[neutral300,critical],borderRadius:8,barPercentage:0.5}]},options:{indexAxis:'y',responsive:true,plugins:{legend:{display:false},tooltip:{callbacks:{label:c=>`${c.raw} merchants`}}},scales:{x:{grid:{color:gridColor},beginAtZero:true},y:{grid:{display:false}}}}});
+
+    // 8. Risk donut
+    new Chart(document.getElementById('riskDonutChart'),{type:'doughnut',data:{labels:['Signed','Recently created','At risk','Likely lost'],datasets:[{data:[511,48,43,73],backgroundColor:[positive,info,caution,critical],borderWidth:2,borderColor:'#ffffff'}]},options:{responsive:true,cutout:'55%',plugins:{legend:{position:'bottom'}}}});
+
+    // Scroll highlighting
+    const nl=document.querySelectorAll('.section-nav a'),ss=document.querySelectorAll('section[id]');
+    window.addEventListener('scroll',()=>{let c='';ss.forEach(s=>{if(window.scrollY>=s.offsetTop-160)c=s.id});nl.forEach(l=>{l.classList.remove('active');if(l.getAttribute('href')==='#'+c)l.classList.add('active')})});
+  </script>
+</body>
+</html>
